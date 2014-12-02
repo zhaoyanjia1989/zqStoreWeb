@@ -1,0 +1,90 @@
+<% include header.ejs %>
+
+			<section>
+				<div class="page-header">
+				  <h4><%= title %></h4>
+				</div>
+			</section>
+
+
+
+
+
+			    
+
+			<section>
+				<div class="page-header">
+				  <h4>应用列表</h4>
+				</div>
+			  <div class="appList" id="appList"> 
+			   <% for(var i=0;i<app.length;i++){%>
+			  	<div class="media"> 
+				  	<a class="media-left" href="appinfo?appId=<%=app[i].id%>">
+					    <img src="<%=app[i].imgJosnField%>">
+					  </a>
+					  <a href="http://www.windowsphone.com/s?appid=<%=app[i].downloadLink%>" role="button" class="btn btn-default pull-right">下载地址</a>
+						<div class="media-body" style="display:block;">
+							<label><%=app[i].appName%> </label><span><%=app[i].size%>M</span>
+							<input class="rating" value="<%=app[i].starLevel%>" type="number" data-show-clear="false" data-show-caption="false" data-readonly="true" data-size="xs">
+						</div>
+				  </div>
+			   <%}%>
+			  </div>
+		  </section>	
+		  <button id="loadApp" type="button" class="btn btn-primary btn-lg btn-block">加载更多</button>
+			
+			  
+		</div>
+		
+
+
+    
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+		<script src="/javascripts/star-rating.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/javascripts/ie10-viewport-bug-workaround.js"></script>
+
+    <script type="text/javascript">
+    $(function(){
+    	var pageNum = <%=pageNum%>;
+    	var pageSize = <%=pageSize%>;
+    	var type = <%=type%>;
+    	$("#loadApp").click(function(){
+    		$("#loadApp").text("加载中").attr("disabled","disabled");
+    		$.ajax({
+				   type: "GET",
+				   url: "loadRankList",
+				   data: "type="+type+"&pageSize="+pageSize+"&pageNum="+(Number(pageNum)+1),
+				   cache:false,
+				   success: function(msg){
+				     pageSize=msg.pageSize;
+				     type=msg.type;
+				     if(msg.app.length<pageSize){
+				     	$("#loadApp").text("没有更多的了");
+				     	pageNum = msg.pageNum-1;
+				     } else{
+				     	$("#loadApp").text("加载更多").removeAttr("disabled");
+				     	pageNum=msg.pageNum;
+				     }
+				     msg.app.forEach(function(app){
+				     	var appHtml = $("<div/>").addClass("media")
+				     	.append('<a class="media-left" href="appinfo?appId='+app.id+'"><img src="'+app.imgJosnField+'"></a><a href="http://www.windowsphone.com/s?appid='+app.downloadLink+'" role="button" class="btn btn-default pull-right">下载地址</a><div class="media-body" style="display:block;"><label>'+app.appName+' </label><span>'+app.size+'M</span><input class="rating" value="'+app.starLevel+'" type="number" data-show-clear="false" data-show-caption="false" data-readonly="true" data-size="xs"></div>');
+				     	$("#appList").append(appHtml);
+				     	$(appHtml).find("input[type='number']").rating();
+				     });	     
+				   },
+				   error:function(msg){
+				   	alert(msg);
+				   	$("#loadApp").text("加载更多").removeAttr("disabled");
+				   }
+				});
+    	});
+    })
+    </script>
+  </body>
+</html>

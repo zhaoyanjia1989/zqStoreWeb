@@ -1,0 +1,125 @@
+<% include header.ejs %>
+
+		<section>
+			<div class="page-header">
+			  <h4><%=title%></h4>
+			</div>
+
+  		<div class="well row">
+	  		<div class="col-lg-2 info-img "> <img src="<%=app.icon%>"></div> 
+		   
+		    <div class="col-lg-3 ">
+			    <p><%=app.appName%> </p>
+			    <input class="rating" value="<%=app.starLevel%>" type="number" data-show-clear="false" data-show-caption="false" data-readonly="true" data-size="xs">
+			    <p>大小:<%=app.size%>M</p>
+		    </div>
+		    <div class="col-lg-3 ">
+		    	<p>版本:<%=app.version%></p>
+			    <p>下载:<%=app.virtualdwTimes%>次</p>
+					<p>分类:<%for(var i=0;i<typeList.length;i++){%><%=typeList[i].typeName%>,<%}%></p>
+			   	<p>语言:<%=app.language%></p>
+		    </div>
+				<div class="col-lg-4 ">
+					<p>简介:</p>
+			   	<%=app.description%>
+		    </div>
+  		</div>
+		</section>
+
+
+		<section>
+			<div class="page-header">
+			  <h4>应用截图</h4>
+			</div>
+			
+			<div class="row well">
+				<% for(var i=0;i<app.infoImg.length;i++){%>
+			  <div class="col-xs-6 col-md-3">
+			    <a href="<%=app.infoImgDetail[i]%>" class="thumbnail">
+			      <img src="<%=app.infoImgDetail[i]%>">
+			    </a>
+			  </div>
+			  <%}%>
+			</div>
+		</section>
+		<a role="button" class="btn btn-lg btn-primary btn-block" href="#">下载</a>
+
+		<section>
+			<div class="page-header">
+			  <h4>用户评论</h4>
+			</div>
+			
+			<div class="row" id="commentList">
+			<%if(commentList.length>0){%>
+			<%for(var i=0;i<commentList.length;i++){%>
+			  <div class="media">
+		      <img src="/images/user.png" alt="<%=commentList[i].account_id%>">
+			    <div class="media-body">
+			      <h4 class="media-heading"><%=commentList[i].account_id%></h4>
+			      <input class="rating" value="<%=commentList[i].starLevel%>" type="number" data-show-clear="false" data-show-caption="false" data-readonly="true" data-size="xs">
+			    </div>
+			    <div class="media-body">
+			    <%=commentList[i].content%>
+			    </div>
+			  </div>
+			  <%}}else{%>
+				<div class="media">
+			    <div class="media-body">
+			      <h4 class="media-heading">暂无评论</h4>
+			    </div>   
+			  </div>
+				<%}%>
+			</div>
+		</section>	
+		<button id="loadComment" type="button" class="btn btn-primary btn-lg btn-block">加载更多</button>  
+		</div>
+
+    
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+		<script src="/javascripts/star-rating.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/javascripts/ie10-viewport-bug-workaround.js"></script>
+    <script type="text/javascript">
+    $(function(){
+    	var pageNum = <%=pageNum%>;
+    	var pageSize = <%=pageSize%>;
+    	var appId = <%=appId%>;
+    	$("#loadComment").click(function(){
+    		$("#loadComment").text("加载中").attr("disabled","disabled");
+    		$.ajax({
+				   type: "GET",
+				   url: "loadCommentList",
+				   data: "appId="+appId+"&pageSize="+pageSize+"&pageNum="+(Number(pageNum)+1),
+				   cache:false,
+				   success: function(msg){
+				     pageSize=msg.pageSize;
+				     appId=msg.appId;
+				     if(msg.commentList.length<pageSize){
+				     	$("#loadComment").text("没有更多的了");
+				     	pageNum = msg.pageNum-1;
+				     } else{
+				     	$("#loadComment").text("加载更多").removeAttr("disabled");
+				     	pageNum=msg.pageNum;
+				     }
+				     msg.commentList.forEach(function(comment){
+				     	var commentHtml = $("<div/>").addClass("media")
+				     	.append('<img src="/images/user.png" alt="'+comment.account_id+'"><div class="media-body"><h4 class="media-heading">'+comment.account_id+'</h4><input class="rating" value="'+comment.starLevel+'" type="number" data-show-clear="false" data-show-caption="false" data-readonly="true" data-size="xs"></div><div class="media-body">'+comment.content+'</div>');
+				     	$("#commentList").append(commentHtml);
+				     	$(commentHtml).find("input[type='number']").rating();
+				     });	     
+				   },
+				   error:function(msg){
+				   	alert(msg);
+				   	$("#loadComment").text("加载更多").removeAttr("disabled");
+				   }
+				});
+    	});
+    })
+    </script>
+  </body>
+</html>

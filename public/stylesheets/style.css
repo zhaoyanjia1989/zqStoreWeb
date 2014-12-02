@@ -1,8 +1,69 @@
 body {
-  padding: 50px;
+  padding-top: 35px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+
+.media img{
+	float: left;
+	width: 65px;
+	height: 65px;
+	margin-right: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.media{
+	border: 1px solid #ddd;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	margin: 0;
+	padding: 2px 10px;
+}
+
+.media span{
+	margin-left: 20px;
+	display: inline-block;
+}
+
+.appList .media .pull-right{
+	margin:15px auto;
+}
+
+.appList .media-body{
+	display: block;
+}
+
+.appList .media-left{
+	display: block;
+}
+
+.appList .media-right{
+	display: block;
+}
+
+.carousel-div{
+	float:none;
+	margin: 0 auto;
+}
+
+.info-img img{
+	float: left;
+	width: 100px;
+	height: 100px;
+	margin-right: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.apptype img{
+	width:100px;
+	height: 100px !important;
+}
+
+.appsubject img{
+	height: 120px;
 }
