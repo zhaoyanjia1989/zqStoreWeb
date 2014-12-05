@@ -38,7 +38,7 @@ if (cluster.isMaster) {
 } else { 
 	// 工作进程分支，启动服务器
 	var app = require('../app');
-	app.set('port', process.env.PORT || 9090);
+	app.set('port', process.env.PORT || 8070);
 	var server = app.listen(app.get('port'), function() {
 	  log.info('Express server listening on port ' + server.address().port);
 	});
